@@ -1,0 +1,299 @@
+{
+    "code": {
+        "1": {
+            "id": 1,
+            "data": {
+                "type": "function",
+                "name": "on_message",
+                "inputs": [
+                    "message"
+                ],
+                "connectedIn": false,
+                "connectedOut": true
+            },
+            "group": null,
+            "inputs": [],
+            "outputs": [
+                {
+                    "connections": [
+                        {
+                            "node": 3,
+                            "input": 0
+                        }
+                    ]
+                }
+            ],
+            "position": [
+                760.7693485622293,
+                368.87862150734213
+            ],
+            "title": "On Message"
+        },
+        "2": {
+            "id": 2,
+            "data": {
+                "type": "callable",
+                "name": "send",
+                "inputs": [
+                    [],
+                    [
+                        "{content}"
+                    ]
+                ],
+                "connectedIn": true,
+                "connectedOut": false
+            },
+            "group": null,
+            "inputs": [
+                {
+                    "connections": []
+                },
+                {
+                    "connections": [
+                        {
+                            "node": 7,
+                            "output": 0
+                        }
+                    ]
+                }
+            ],
+            "outputs": [
+                {
+                    "connections": []
+                }
+            ],
+            "position": [
+                1592.4469235694476,
+                367.20937081448875
+            ],
+            "title": "Send Message"
+        },
+        "3": {
+            "id": 3,
+            "data": {
+                "type": "message",
+                "name": "message",
+                "outputs": [
+                    "{content}",
+                    "{channel}",
+                    "{user}"
+                ],
+                "connectedIn": true,
+                "connectedOut": true
+            },
+            "group": null,
+            "inputs": [
+                {
+                    "connections": [
+                        {
+                            "node": 1,
+                            "output": 0
+                        }
+                    ]
+                }
+            ],
+            "outputs": [
+                {
+                    "connections": [
+                        {
+                            "node": 7,
+                            "input": 0
+                        }
+                    ]
+                },
+                {
+                    "connections": []
+                },
+                {
+                    "connections": [
+                        {
+                            "node": 8,
+                            "input": 0
+                        }
+                    ]
+                }
+            ],
+            "position": [
+                1083.7773272146317,
+                361.26314931284804
+            ],
+            "title": "Message"
+        },
+        "5": {
+            "id": 5,
+            "data": {
+                "type": "callable",
+                "name": "print",
+                "str": "'Hello Ma G '{user_name}",
+                "connectedIn": true,
+                "connectedOut": false
+            },
+            "group": null,
+            "inputs": [
+                {
+                    "connections": [
+                        {
+                            "node": 10,
+                            "output": 0
+                        }
+                    ]
+                }
+            ],
+            "outputs": [],
+            "position": [
+                1585.2933408634935,
+                226.5794941442399
+            ],
+            "title": "Print Out"
+        },
+        "7": {
+            "id": 7,
+            "data": {
+                "type": "string",
+                "name": "string_join",
+                "outputs": [
+                    "joined"
+                ],
+                "connectedIn": true,
+                "connectedOut": true
+            },
+            "group": null,
+            "inputs": [
+                {
+                    "connections": [
+                        {
+                            "node": 3,
+                            "output": 0
+                        }
+                    ]
+                }
+            ],
+            "outputs": [
+                {
+                    "connections": [
+                        {
+                            "node": 2,
+                            "input": 1
+                        }
+                    ]
+                }
+            ],
+            "position": [
+                1352,
+                375
+            ],
+            "title": "String Join"
+        },
+        "8": {
+            "id": 8,
+            "data": {
+                "type": "user",
+                "name": "user",
+                "connectedIn": true,
+                "connectedOut": true
+            },
+            "group": null,
+            "inputs": [
+                {
+                    "connections": [
+                        {
+                            "node": 3,
+                            "output": 2
+                        }
+                    ]
+                }
+            ],
+            "outputs": [
+                {
+                    "connections": []
+                },
+                {
+                    "connections": [
+                        {
+                            "node": 10,
+                            "input": 0
+                        }
+                    ]
+                }
+            ],
+            "position": [
+                1360,
+                498
+            ],
+            "title": "User"
+        },
+        "9": {
+            "id": 9,
+            "data": {
+                "type": "string",
+                "name": "",
+                "outputs": {
+                    "0": "Hello Ma G ",
+                    "str": ""
+                },
+                "str": "Hello Ma G ",
+                "connectedIn": false,
+                "connectedOut": true
+            },
+            "group": null,
+            "inputs": [],
+            "outputs": [
+                {
+                    "connections": [
+                        {
+                            "node": 10,
+                            "input": 0
+                        }
+                    ]
+                }
+            ],
+            "position": [
+                1348.189301828381,
+                683.2340110889382
+            ],
+            "title": "String"
+        },
+        "10": {
+            "id": 10,
+            "data": {
+                "type": "string",
+                "name": "string_join",
+                "outputs": [
+                    "joined"
+                ],
+                "connectedIn": true,
+                "connectedOut": true
+            },
+            "group": null,
+            "inputs": [
+                {
+                    "connections": [
+                        {
+                            "node": 9,
+                            "output": 0
+                        },
+                        {
+                            "node": 8,
+                            "output": 1
+                        }
+                    ]
+                }
+            ],
+            "outputs": [
+                {
+                    "connections": [
+                        {
+                            "node": 5,
+                            "input": 0
+                        }
+                    ]
+                }
+            ],
+            "position": [
+                1627.4085789043475,
+                574.5614034458187
+            ],
+            "title": "String Join"
+        }
+    }
+}

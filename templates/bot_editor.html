@@ -1,0 +1,26 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit (Name)</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/d3-node-editor@0.7.4/build/d3-node-editor.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/editor-style.css') }}">
+</head>
+<body>
+    <div class="topbar">
+        <button class="btn" id="save-btn">Save</button>
+    </div>
+    <div class="message">Message!!!</div>
+    <div id="nodeEditor" class="node-editor"></div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/d3@4.10.2/build/d3.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alight@0.14.0/alight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-node-editor@0.7.4/build/d3-node-editor.js"></script>
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <script src="https://raw.githubusercontent.com/KhachKara/D3-Node-Editor/master/src/utils.js"></script>
+    <script src="{{ url_for('static', filename='js/modules/utils.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/modules/components.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bot_editor.js') }}"></script>
+</body>
+</html>

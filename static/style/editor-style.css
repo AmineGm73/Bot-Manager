@@ -1,0 +1,183 @@
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Rubik:ital,wght@0,300..900;1,300..900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
+html, body{
+    height: 100%;
+    margin: 0;
+    font-family: "Rubik", sans-serif;
+}
+
+body > .message {
+    position: fixed;
+    color: whitesmoke;
+    width: 90vw;
+    border: whitesmoke dashed 2px;
+    border-radius: 5px;
+    height: 38px;
+    bottom: 10px;
+    padding-top: 19px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    text-align: center;
+    opacity: 0;
+}
+
+body > .message.active {
+    opacity: 1;
+    transition: opacity 0.5s;
+}
+
+.topbar {
+    position: fixed;
+    background-color: #313131;
+    height: 50px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+#nodeEditor{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    /* Add your background pattern here */
+    background-color: #313131;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.171) 3px, transparent 0);
+    background-size: 30px 30px;
+    background-position-x: 0;
+    background-position-y: 0;
+    filter: drop-shadow(0 0 15px);
+    z-index: 0;
+;
+}
+
+.context-menu .item {
+    padding: 6px;
+    padding-left: 10px;
+    background-color: #4b4b4bb9;
+    border-bottom: 1px solid #5e5d5d;
+    width: 150px;
+}
+
+.context-menu > .item .subitems {
+    left: 101%;
+}
+
+.node-editor .connections {
+    transform: translateY(2px);
+}
+
+.node-editor .node .socket {
+    height: 16px;
+    width: 16px;
+}
+
+.socket.user{
+    background: #99c9ef;
+}
+.socket.message{
+    background: #9fb0fa;
+}
+.socket.channel {
+    background: #fccd7a;
+}
+.socket.string {
+    background: #9be0ba;
+}
+.socket.action {
+    background: #e09b9b;
+}
+
+.control input {
+    width: 150px
+}
+
+.node-editor .node {
+    background-color: #4b4b4b;
+    border: 3px solid #38383860;
+    transition: background, border ease 0.35s;
+}
+
+.node-editor .node:hover {
+    background-color: #5e5d5d;
+}
+
+
+.node-editor .node.selected {
+    background-color: #5e5d5d;
+    border: 3px solid #3d437c;
+}
+
+.alert {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    background: rgba(255, 30,3, 0.7);
+    color: white;
+    padding: 1%;
+    font-size: 120%;
+    font-family: monospace;
+    text-decoration: none;
+}
+
+
+.alert:hover {
+    color: #ffcccc;
+}
+
+.btn {
+    font-size: 17px;
+    background: transparent;
+    border: none;
+    padding: 1em 1.5em;
+    color: #ffedd3;
+    text-transform: uppercase;
+    position: relative;
+    transition: 0.5s ease;
+    cursor: pointer;
+}
+
+.btn::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 2px;
+    width: 0;
+    background-color: #ffedd3;
+    transition: 0.5s ease;
+}
+
+.btn:hover {
+    transition-delay: 0.5s;
+}
+
+.btn:hover::before {
+    width: 100%;
+}
+
+.btn::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 0;
+    width: 100%;
+    background-color: #ffedd3;
+    transition: 0.4s ease;
+    z-index: -1;
+}
+
+.btn:hover::after {
+    transition-delay: 0.4s;
+    color: #ffedd3;
+}
+
+button#save-btn {
+    left: 100%;
+    transform: translateX(-100%);
+}
