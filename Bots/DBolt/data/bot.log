@@ -853,3 +853,29 @@ AttributeError: 'Message' object has no attribute 'conten'[0m
 2024-08-24 17:22:01,793 - DBolt - INFO - Starting bot script with command: python /app/DBolt/main.py
 2024-08-24 17:22:02,202 - DBolt - INFO - Output: [30;1m2024-08-24 16:22:02[0m [34;1mINFO    [0m [35mdiscord.client[0m logging in using static token
 2024-08-24 17:22:03,312 - DBolt - INFO - Output: [30;1m2024-08-24 16:22:03[0m [34;1mINFO    [0m [35mdiscord.gateway[0m Shard ID None has connected to Gateway (Session ID: f17b2711a0df19e82d4e19e6d3b27f2a).
+2024-08-24 19:04:41,431 - DBolt - INFO - Output: [30;1m2024-08-24 18:04:41[0m [34;1mINFO    [0m [35mdiscord.gateway[0m Shard ID None session has been invalidated.
+2024-08-24 19:04:46,990 - DBolt - ERROR - Error: Client : TestAdmin, connected!
+2024-08-24 19:04:46,991 - DBolt - INFO - Output: Traceback (most recent call last):
+  File "/app/DBolt/main.py", line 21, in <module>
+2024-08-24 19:04:46,998 - DBolt - INFO - Output: client.run("")
+2024-08-24 19:04:46,998 - DBolt - INFO - Output: ^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/discord/client.py", line 869, in run
+2024-08-24 19:04:47,000 - DBolt - INFO - Output: asyncio.run(runner())
+  File "/usr/local/lib/python3.11/asyncio/runners.py", line 190, in run
+2024-08-24 19:04:47,001 - DBolt - INFO - Output: return runner.run(main)
+2024-08-24 19:04:47,002 - DBolt - INFO - Output: ^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/asyncio/runners.py", line 118, in run
+2024-08-24 19:04:47,002 - DBolt - INFO - Output: return self._loop.run_until_complete(task)
+2024-08-24 19:04:47,003 - DBolt - INFO - Output: ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+2024-08-24 19:04:47,004 - DBolt - INFO - Output: return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/discord/client.py", line 858, in runner
+2024-08-24 19:04:47,004 - DBolt - INFO - Output: await self.start(token, reconnect=reconnect)
+  File "/usr/local/lib/python3.11/site-packages/discord/client.py", line 787, in start
+2024-08-24 19:04:47,005 - DBolt - INFO - Output: await self.connect(reconnect=reconnect)
+2024-08-24 19:04:47,005 - DBolt - INFO - Output: File "/usr/local/lib/python3.11/site-packages/discord/client.py", line 667, in connect
+2024-08-24 19:04:47,006 - DBolt - INFO - Output: await self.ws.poll_event()
+2024-08-24 19:04:47,006 - DBolt - INFO - Output: File "/usr/local/lib/python3.11/site-packages/discord/gateway.py", line 648, in poll_event
+2024-08-24 19:04:47,006 - DBolt - INFO - Output: raise ConnectionClosed(self.socket, shard_id=self.shard_id, code=code) from None
+2024-08-24 19:04:47,008 - DBolt - INFO - Output: discord.errors.ConnectionClosed: Shard ID None WebSocket closed with 4004
