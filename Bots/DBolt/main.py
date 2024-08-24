@@ -1,8 +1,3 @@
-from json_m.json_m import json_file, Operation
-
-conf_props = json_file("config.json", Operation.GET, "props")
-
-# Main Code Start
 import discord
 
 intents = discord.Intents.default()
@@ -14,12 +9,13 @@ client = discord.Client(intents=intents)
 
 @client.event
 async def on_ready():
-    print(f'Client : {client.user.name}, connected!')
+    discord.utils.setup_logging()
 
 @client.event
 async def on_message(message: discord.Message):
+    if message.author == client.user:
+        return
     content, user, channel = message.content, message.author, message.channel
     await channel.send(content)
 
-
-# Main Code End
+client.run("MTI2MDk4MTQ1MjQ2NDQ1NTczNA.G88dde.QFGZFTfkRkt2WumH2KNwiWRRtDufWl6VD4L4yk")

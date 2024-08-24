@@ -2,9 +2,10 @@ import threading
 import subprocess
 import time
 import os
-import sys
 import logging
-import shutil
+import docker
+import docker.errors
+import docker.types
 from flask import Flask, render_template, request, redirect, jsonify
 from json_m.json_m import*
 from extensions.socketio import SocketIO
@@ -16,7 +17,6 @@ from math import *
 app = Flask(__name__)
 
 socket = SocketIO(app=app)
-
 def run():
     global socket
     global app
@@ -51,41 +51,73 @@ class BotProcess(threading.Thread):
         self._stop_event = threading.Event()
         self._is_alive = False
         self.image_path = f'images/{bot_name}_image.png'
-        self.process = None
+        self.container = None
         self.first_run_time = None
         self.stop_run_time = None
         self.runtime = 0
+
         if json_file('Bots/bots.json', Operation.GET, 'bots_runtimes'):
             self.runtime = json_file('Bots/bots.json', Operation.GET, 'bots_runtimes').get(self.bot_name, 0)
+
         # Create a logger
         self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(logging.DEBUG)
-        # Create a file handler and set its level to DEBUG
-        file_handler = logging.FileHandler(f'Bots/{self.bot_name}/data/bot.log')
-        file_handler.setLevel(logging.DEBUG)
-        # Create a console handler and set its level to INFO
-        console_handler = logging.StreamHandler()
-        console_handler.setLevel(logging.INFO)
-        # Create a formatter and add it to the handlers
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        file_handler.setFormatter(formatter)
-        console_handler.setFormatter(formatter)
-        # Add the handlers to the logger
-        self.logger.addHandler(file_handler)
-        self.logger.addHandler(console_handler)
+        self.logger.setLevel(logging.INFO)
+        self.file_handler = logging.FileHandler(f'Bots/{self.bot_name}/data/bot.log')
+        self.file_handler.setLevel(logging.INFO)
+        self.console_handler = logging.StreamHandler()
+        self.console_handler.setLevel(logging.INFO)
+        self.formatter = logging.Formatter('%(asctime)s - {} - %(levelname)s - %(message)s'.format(self.bot_name))
+        self.incode_formatter = logging.Formatter('Output: %(message)s')
+        self.file_handler.setFormatter(self.formatter)
+        self.console_handler.setFormatter(self.formatter)
+        self.logger.addHandler(self.file_handler)
+        self.logger.addHandler(self.console_handler)
+
+        # Initialize Docker client
+        self.docker_client = docker.from_env()
 
     def run(self):
         print(f'Starting bot process for {self.bot_name}...')
         self.first_run_time = datetime.now()
         try:
-            script_path = f'Bots/{self.bot_name}/main.py'
+            script_path = f'/app/{self.bot_name}/main.py'
+            host_script_path = f'{os.getcwd()}/Bots/'
+
             while not self._stop_event.is_set():
                 try:
-                    self.process = subprocess.Popen([str(shutil.which("python")), script_path])
+                    # Start the container with a long-running command
+                    self.container = self.docker_client.containers.run(
+                        "python:3.11.9",
+                        "/bin/bash -c 'while true; do sleep 1000; done'",
+                        volumes={host_script_path: {'bind': '/app', 'mode': 'rw'}},
+                        mem_limit="100m",
+                        detach=True
+                    )
                     self._is_alive = True
-                    self.process.wait()  # Wait for the process to complete
-                except subprocess.CalledProcessError as e:
-                    print(f'Error in {self.bot_name}: {e.stderr}')
+
+                    # Install the required modules
+                    self.install_modules()
+
+                    # Start the bot script
+                    exec_cmd = f"python {script_path}"
+                    self.log(f'Starting bot script with command: {exec_cmd}')
+                
+                    # Execute the bot script in the container
+                    exec_result = self.container.exec_run(exec_cmd, stream=True, demux=True)
+                    # Log the output and errors from the script
+                    for line in exec_result.output:
+                        print(line)
+                        
+                        if line[1]:
+                            self.log(f'Output: {line[1].strip().decode("utf-8")}')
+                        elif line[0]:
+                            self.error(f'Error: {line[0].strip().decode("utf-8")}')
+                    # Stream container logs
+                    for line in self.container.logs(stream=True, follow=True):
+                        self.log(line.strip().decode('utf-8'))
+                except docker.errors.ContainerError as e:
+                    print(f'Error in {self.bot_name}: {e}')
+                    self.log(f'Error in {self.bot_name}: {e}')
                 time.sleep(3600)
         except Exception as e:
             print(f'Error in {self.bot_name}: {str(e)}')
@@ -98,32 +130,50 @@ class BotProcess(threading.Thread):
         self._stop_event = threading.Event()
         self._is_alive = True
         super().start()
-        self.log("Bot started successfuly.")
 
-    def is_alive(self):
-        return self._is_alive
+    def is_alive(self):return self._is_alive
 
     def stop(self):
         self._stop_event.set()
         self._is_alive = False
-        # Terminate the subprocess
-        if self.process:
-            self.process.terminate()
-            self.process.wait()
-            self.stop_run_time = datetime.now()
-            
-            
-            
+        if self.container:
+            self.container.stop()
+            self.container.remove()
+        self.stop_run_time = datetime.now()
+        self.save_runtime()
+
     def save_runtime(self):
         bots_runtimes = json_file("Bots/bots.json", Operation.GET, "bots_runtimes")
         if self.stop_run_time is None and bots_runtimes:
             bots_runtimes[self.bot_name] = floor((datetime.now() - self.first_run_time).total_seconds())
             self.runtime = bots_runtimes[self.bot_name]
             json_file("Bots/bots.json", Operation.CHANGE, "bots_runtimes", bots_runtimes)
-            
-    def log(self, message):
-        # Perform some action
-        self.logger.info(message)
+    def log(self, message): self.logger.info(msg=message)
+    def error(self, message): self.logger.error(msg=message)
+    def warn(self, message): self.logger.warning(msg=message)
+    def get_modules(self): 
+        with open(os.path.join(os.getcwd(), "Bots", self.bot_name, "requirements.txt"), "r+") as f:
+            return f.readlines()
+    def setLoggingLevel(self, level): self.console_handler.setLevel(level)
+    def install_modules(self):
+        self.setLoggingLevel(logging.WARN)
+        if self.container:
+            self.warn("Upgrading pip...")
+            self.container.exec_run("pip install --upgrade pip")
+            self.warn(f'Installing modules...')
+            requirements_path = f"/app/{self.bot_name}/requirements.txt"
+            exit_code, output = self.container.exec_run(f"pip install -r {requirements_path} --root-user-action ignore")
+            output = output.decode('utf-8')
+            if exit_code != 0:
+                self.setLoggingLevel(logging.ERROR)
+                self.error(f'Error installing modules: {output}')
+                # Additional debugging
+                self.warn('Checking installed packages...')
+                exit_code, check_output = self.container.exec_run("pip list")
+                self.log(f'Installed packages: {check_output.decode("utf-8")}')
+            else:
+                self.log(f'Modules installed successfully!')
+        self.setLoggingLevel(logging.INFO)
 
 def get_bot_by_name(botname):
     global bot_processes
@@ -263,7 +313,7 @@ if __name__ == '__main__':
         for process in bot_processes:
             process.stop()
         print("All bot processes terminated.")
-        os._exit(os.EX_OK)
-        sys.exit(0)
         quit() 
+    finally:
+        exit(0)
 

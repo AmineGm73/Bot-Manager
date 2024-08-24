@@ -2,42 +2,62 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bot Settings</title>
+    <title>Bot Settings - Discord Theme</title>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-    <link href="{{ url_for('static', filename='style/bot_settings_style.css') }}" rel="stylesheet">
+    <link href="{{url_for('static', filename='style/bot_settings_style.css')}}" rel="stylesheet">
     <script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+" crossorigin="anonymous"></script>
 </head>
 <body>
-    <button class="save-btn btn-anim" style="position: fixed; bottom: 10px; right: 10px;" onclick="sendData()">Save</button>
-    <h4 class="runtime-txt">Running for : Nah</h4>
-    <a href="/" id="back-a">Back</a>
-    <a href="/bot_logs/{{ bot.bot_name }}" class="btn-anim" style="left: 150px; text-decoration: none;">Logs<i class="ri-file-text-line"></i></a>
-    <h1><input type="text" name="name" id="bot_name" class="invisible-input" value="{{ bot.bot_name }}"> Settings :</h1>
-    <img src="{{ url_for('static', filename=bot.image_path) }}" alt="{{ bot.bot_name }} Image" style="max-width: 100px;">
-    <div class="bot-card">
-        
-        <ul id="props">
-        {% for prop_name, prop_value in props.items() %}
-            <li class="prop" id="{{ prop_name }}">{{ transform_snake_case_to_title(prop_name) }} : <input type="text" name="name" id="bot_name" class="invisible-input" value="{{ prop_value }}"></li>
-        {% endfor %}
-        </ul>
-        {% if bot.is_alive() %}
-            <div class="status" style="display: flex; max-height: 25px; position: fixed; bottom: 20px;">
-                <p style="color: #fff;">Status: Running</p>
-                <a href="{{ url_for('stop_bot', bot_name=bot.bot_name) }}" style="margin-top: 11px; margin-left: 5px; padding-bottom: 30px; font-size: 25px">
-                    <i class="ri-stop-circle-fill" style="color: red; height: 25px;"></i>
-                </a>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="nav-item active">Applications</div>
+            <div class="nav-item">Teams</div>
+            <div class="nav-item">Server Insights</div>
+            <div class="nav-item">Embed Debugger</div>
+            <div class="nav-item">Documentation</div>
+        </nav>
+        <main class="content">
+            <header>
+                <h1>Bot Settings</h1>
+                <div class="header-actions">
+                    <a href="/" class="btn btn-secondary">Back</a>
+                    <a href="/bot_logs/{{ bot.bot_name }}" class="btn btn-primary">Logs <i class="ri-file-text-line"></i></a>
+                </div>
+            </header>
+            <div class="bot-info">
+                <img src="{{ url_for('static', filename=bot.image_path) }}" alt="{{ bot.bot_name }} Image" class="bot-image">
+                <input type="text" class="bot-name-input" value="{{ bot.bot_name }}" readonly>
             </div>
-        {% else %}
-            <div class="status" style="display: flex; max-height: 25px; position: fixed; bottom: 20px;">
-                <p style="color: #fff;">Status: Stopped</p>
-                <a href="{{ url_for('start_bot', bot_name=bot.bot_name) }}" style="margin-top: 11px; margin-left: 5px; padding-bottom: 30px; font-size: 25px">
-                    <i class="ri-play-circle-fill" style="color: greenyellow; height: 25px;"></i>
-                </a>
+            <div class="settings-container">
+                <h2>Properties</h2>
+                <ul class="properties-list">
+                    {% for prop_name, prop_value in props.items() %}
+                        <li class="property-item">
+                            <span>{{ transform_snake_case_to_title(prop_name) }}:</span>
+                            <input type="text" class="property-input" value="{{ prop_value }}">
+                        </li>
+                    {% endfor %}
+                </ul>
             </div>
-        {% endif %}
+            <footer>
+                <div class="status-container">
+                    {% if bot.is_alive() %}
+                        <span class="status-text">Status: Running</span>
+                        <a href="{{ url_for('stop_bot', bot_name=bot.bot_name) }}" class="toggle-status-btn">
+                            <i class="ri-stop-circle-fill" style="color: red;"></i>
+                        </a>
+                    {% else %}
+                        <span class="status-text">Status: Stopped</span>
+                        <a href="{{ url_for('start_bot', bot_name=bot.bot_name) }}" class="toggle-status-btn">
+                            <i class="ri-play-circle-fill" style="color: greenyellow;"></i>
+                        </a>
+                    {% endif %}
+                </div>
+                <span class="runtime">Running for: Nah</span>
+                <button class="btn btn-primary save-btn" onclick="sendData()">Save Changes</button>
+            </footer>
+        </main>
     </div>
     <script src="{{ url_for('static', filename='js/bot_settings.min.js') }}"></script>
 </body>

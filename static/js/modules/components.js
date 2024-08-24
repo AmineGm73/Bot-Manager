@@ -12,22 +12,31 @@ var componentSendMessage = new D3NE.Component("Send Message", {
         var inpChannel = new D3NE.Input("Channel", channelSocket);
         var inpMessage = new D3NE.Input("Message", stringSocket);
         var out = new D3NE.Output("Action", actionSocket);
+        var del_after = new D3NE.Input("Delete After", integerSocket);
         var nodeType = "callable";
         var nodeName = "send";
         var inputs = [];
+        let messageDeleteAfter = 0;
+        if (node.data.del_after != 0){
+            messageDeleteAfter = node.data.del_after || 0;
+        }
         node.data = {
             type: nodeType,
             name: nodeName,
-            inputs: inputs
+            inputs: inputs,
+            del_after: messageDeleteAfter
         };
         return node
             .addInput(inpChannel)
             .addInput(inpMessage)
+            .addInput(del_after)
             .addOutput(out);
     },
     worker(node, inputs, outputs) {
         var channel = inputs[0][0];
         var message = inputs[1][0];
+        var del_after = inputs[2][0];
+        node.data.del_after = del_after;
         node.data.inputs = inputs;
         // Check if there are any input connections
         var connectedIn = false;
@@ -70,7 +79,7 @@ var componentString = new D3NE.Component("String", {
     builder(node) {
         var out = new D3NE.Output("String", stringSocket);
         var messageControl = new D3NE.Control(
-            `<input type="text" placeholder="Enter text" value=${node.data.str || ''}>`,
+            `<input type="text" placeholder="Enter text" value=${node.data.outputs.str || ''}>`,
             (el, c) => {
                 el.value = c.getData('str') || '';
             
@@ -105,7 +114,7 @@ var componentString = new D3NE.Component("String", {
     },
     worker(node, inputs, outputs) {
         // For demonstration purposes, just return a hardcoded string
-        outputs[0] = node.data.str.replace(/^'+|'+$/g, '');
+        outputs[0] = node.data.outputs.str.replace(/^'+|'+$/g, '');
         node.data.outputs[0] = outputs[0].replace(/^'+|'+$/g, '');
         // Check if there are any input connections
         var connectedIn = false;
@@ -146,18 +155,44 @@ var componentString = new D3NE.Component("String", {
 var componentInteger = new D3NE.Component("Integer", {
     builder(node) {
         var out = new D3NE.Output("Integer", integerSocket);
+        var integerControl = new D3NE.Control(
+            `<input type="number" placeholder="Enter integer" value=${node.data.int || 0}>`,
+            (el, c) => {
+                el.value = c.getData('int') || 0;
+            
+                function upd() {
+                    c.putData("int", el.value); // Corrected from toString() to toString
+                }
+    
+                el.addEventListener("input", ()=>{
+                    upd();
+                    editor.eventListener.trigger("change");
+                });
+                el.addEventListener("mousedown", function(e){e.stopPropagation();}); // prevent node movement when selecting text in the input field
+                upd();
+            }
+        );
+        var nodeInt = 0;
+        if (!isNaN(node.data.int)){
+            nodeInt = node.data.int || 0;
+        }
         var nodeType = "integer";
         var nodeName = "";
         node.data = {
             type: nodeType,
-            name: nodeName
+            name: nodeName,
+            outputs: {
+                int: nodeInt
+            }
         };
         return node
+            .addControl(integerControl)
             .addOutput(out);
     },
     worker(node, inputs, outputs) {
         // For demonstration purposes, just return a hardcoded integer
-        outputs[0] = 42;
+        outputs[0] = parseInt(node.data.int);
+        node.data.outputs.int = parseInt(node.data.int);
         // Check if there are any input connections
         var connectedIn = false;
         

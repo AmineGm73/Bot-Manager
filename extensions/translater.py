@@ -1,6 +1,6 @@
 import json
 
-def order_nodes(nodes):
+def order_nodes(nodes: dict):
     # Initialize adjacency list and indegree count
     adj_list = {}
     indegree = {}

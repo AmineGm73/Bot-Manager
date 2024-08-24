@@ -1,13 +1,12 @@
 const socket = io({autoConnect: true});
 
-
 function getProps() {
-    let propsList = document.getElementById('props').getElementsByTagName('li');
+    let propsList = document.querySelector('.properties-list').getElementsByTagName('li');
     let propsDict = {};
 
     for (let i = 0; i < propsList.length; i++) {
         let prop = propsList[i];
-        let propKey = prop.id;
+        let propKey = prop.querySelector('span').textContent.replace(':', '').trim();
         let input = prop.querySelector('input');
         let propValue = input.value;
         propsDict[propKey] = propValue.trim();
@@ -38,30 +37,45 @@ function redirectToMainRoute() {
     window.location.href = "/";
 }
 
-window.onload = () => {
-    socket.emit("connect");
-}
-
-socket.on('runtime_update', function(data) {
-    // Get the runtime value from the data
-    let botName = window.location.href.split('/').pop();
-    var runtime = data[botName];
-    
-    // Find the <h4> element with the class "runtime-txt"
-    var runtimeElement = document.querySelector('.runtime-txt');
-    
-    // Change the value of the <h4> element
-    if (runtimeElement) {
-        runtimeElement.textContent = `Running for : ${formatSecondsIntoTime(runtime)}`;
-    }
-});
-
 function sendData() {
-    data = getProps();
+    let data = getProps();
     let botName = window.location.href.split('/').pop();
     data["bot_name"] = botName;
     socket.emit("saveSettings", data);
 
-    alert("Bot Saved Successfuly!!!")
+    alert("Bot Saved Successfully!")
     redirectToMainRoute();
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const toggleStatusBtn = document.querySelector('.toggle-status-btn');
+    const saveBtn = document.querySelector('.save-btn');
+
+    socket.emit("connect");
+
+    toggleStatusBtn.addEventListener('click', function() {
+        const icon = this.querySelector('i');
+        if (icon.classList.contains('ri-stop-circle-fill')) {
+            icon.classList.replace('ri-stop-circle-fill', 'ri-play-circle-fill');
+            icon.style.color = '#3ba55c';
+            document.querySelector('.status-text').textContent = 'Status: Stopped';
+        } else {
+            icon.classList.replace('ri-play-circle-fill', 'ri-stop-circle-fill');
+            icon.style.color = '#ed4245';
+            document.querySelector('.status-text').textContent = 'Status: Running';
+        }
+    });
+
+    saveBtn.addEventListener('click', sendData);
+});
+
+socket.on('runtime_update', function(data) {
+    let botName = window.location.href.split('/').pop();
+    var runtime = data[botName];
+    
+    var runtimeElement = document.querySelector('.runtime');
+    
+    if (runtimeElement) {
+        runtimeElement.textContent = `Running for: ${formatSecondsIntoTime(runtime)}`;
+    }
+});

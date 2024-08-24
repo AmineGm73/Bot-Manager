@@ -90,6 +90,9 @@ body > .message.active {
 .socket.action {
     background: #e09b9b;
 }
+.socket.integer {
+    background: #ce9be0;
+}
 
 .control input {
     width: 150px

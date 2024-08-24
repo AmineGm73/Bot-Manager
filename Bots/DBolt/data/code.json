@@ -38,8 +38,12 @@
                     [],
                     [
                         "{content}"
+                    ],
+                    [
+                        5
                     ]
                 ],
+                "del_after": 5,
                 "connectedIn": true,
                 "connectedOut": false
             },
@@ -55,6 +59,14 @@
                             "output": 0
                         }
                     ]
+                },
+                {
+                    "connections": [
+                        {
+                            "node": 11,
+                            "output": 0
+                        }
+                    ]
                 }
             ],
             "outputs": [
@@ -63,8 +75,8 @@
                 }
             ],
             "position": [
-                1592.4469235694476,
-                367.20937081448875
+                1877.4469235694476,
+                333.20937081448875
             ],
             "title": "Send Message"
         },
@@ -124,7 +136,7 @@
             "data": {
                 "type": "callable",
                 "name": "print",
-                "str": "'Hello Ma G '{user_name}",
+                "str": "{user_name}",
                 "connectedIn": true,
                 "connectedOut": false
             },
@@ -151,11 +163,11 @@
             "data": {
                 "type": "string",
                 "name": "string_join",
-                "outputs": [
-                    "joined"
-                ],
                 "connectedIn": true,
-                "connectedOut": true
+                "connectedOut": true,
+                "outputs": [
+                    "{content}"
+                ]
             },
             "group": null,
             "inputs": [
@@ -166,6 +178,9 @@
                             "output": 0
                         }
                     ]
+                },
+                {
+                    "connections": []
                 }
             ],
             "outputs": [
@@ -228,10 +243,10 @@
                 "type": "string",
                 "name": "",
                 "outputs": {
-                    "0": "Hello Ma G ",
+                    "0": "",
                     "str": ""
                 },
-                "str": "Hello Ma G ",
+                "str": "",
                 "connectedIn": false,
                 "connectedOut": true
             },
@@ -242,7 +257,7 @@
                     "connections": [
                         {
                             "node": 10,
-                            "input": 0
+                            "input": 1
                         }
                     ]
                 }
@@ -258,23 +273,27 @@
             "data": {
                 "type": "string",
                 "name": "string_join",
-                "outputs": [
-                    "joined"
-                ],
                 "connectedIn": true,
-                "connectedOut": true
+                "connectedOut": true,
+                "outputs": [
+                    "{user_name}"
+                ]
             },
             "group": null,
             "inputs": [
                 {
                     "connections": [
                         {
-                            "node": 9,
-                            "output": 0
-                        },
-                        {
                             "node": 8,
                             "output": 1
+                        }
+                    ]
+                },
+                {
+                    "connections": [
+                        {
+                            "node": 9,
+                            "output": 0
                         }
                     ]
                 }
@@ -294,6 +313,36 @@
                 574.5614034458187
             ],
             "title": "String Join"
+        },
+        "11": {
+            "id": 11,
+            "data": {
+                "type": "integer",
+                "name": "",
+                "outputs": {
+                    "int": 5
+                },
+                "int": "5",
+                "connectedIn": false,
+                "connectedOut": true
+            },
+            "group": null,
+            "inputs": [],
+            "outputs": [
+                {
+                    "connections": [
+                        {
+                            "node": 2,
+                            "input": 2
+                        }
+                    ]
+                }
+            ],
+            "position": [
+                1624,
+                736
+            ],
+            "title": "Integer"
         }
     }
 }

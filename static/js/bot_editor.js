@@ -103,7 +103,6 @@ function saveEditorData(){
 }
 
 socket.on('codeSaved', function(){
-    alert("Bot Saved Successfuly!!!");
     showMessage("Code Saved Successfuly!!!", "green");
 });
 
