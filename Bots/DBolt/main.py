@@ -18,4 +18,4 @@ async def on_message(message: discord.Message):
     content, user, channel = message.content, message.author, message.channel
     await channel.send(content)
 
-client.run("MTI2MDk4MTQ1MjQ2NDQ1NTczNA.G88dde.QFGZFTfkRkt2WumH2KNwiWRRtDufWl6VD4L4yk")
+client.run("")

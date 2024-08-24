@@ -4,6 +4,6 @@
     "on_start_run": true,
     "props": {
         "command_prefix": "?",
-        "bot_token": "uhygtfrdessdf"
+        "bot_token": ""
     }
 }
